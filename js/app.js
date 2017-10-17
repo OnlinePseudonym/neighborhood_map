@@ -1,10 +1,11 @@
 var model = {
     map: null,
+    markers: [],
     // Points of interest in Phoenix
     // Consider hosting elsewhere if > 15
     locations: [
-        {title: 'Tempe Town Lake',loc: {lat: 33.4316776 lng: -111.9276565},},
-        {title: 'Desert Botanical Garden', loc: {lat: 33.460598 lng: -111.947776}}
+        {title: 'Tempe Town Lake',loc: {lat: 33.4316776, lng: -111.9276565}},
+        {title: 'Desert Botanical Garden', loc: {lat: 33.460598, lng: -111.947776}}
     ],
     // Centerpoint for map, currently ASU
     mapStart: {lat: 33.4242399, lng: -111.9280527},
@@ -237,17 +238,24 @@ var viewModel = {
     },
     getMap: function() {
         return model.map;
-    }
+    },
+    getLocations: function() {
+        return model.locations;
+    },
     setMap: function(map) {
         model.map = map;
+    },
+    pushMarker: function(marker) {
+        model.markers.push(marker);
     }
 }
 
 var mapView = {
-    // initialize google map and store to the model
     init: function() {
         this.renderMap();
+        this.renderMarkers();
     },
+    // render google map and store to the model
     renderMap: function() {
         var map = new google.maps.Map(document.getElementById('map'), {
             center: viewModel.getStart(),
@@ -255,5 +263,21 @@ var mapView = {
             zoom: 11
         });
         viewModel.setMap(map)
+    },
+    // render location markers and store in model
+    renderMarkers: function() {
+        var locations = viewModel.getLocations();
+        for (var i = 0; i < locations.length; i++) {
+            var position = locations[i].loc;
+            var title = locations[i].title;
+            var marker = new google.maps.Marker({
+                map: viewModel.getMap(),
+                position: position,
+                title: title,
+                animation: google.maps.Animation.DROP,
+                id: i
+            });
+            viewModel.pushMarker(marker);
+        };
     }
 }
