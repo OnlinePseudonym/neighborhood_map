@@ -4,8 +4,8 @@ var model = {
     // Points of interest in Phoenix
     // Consider hosting elsewhere if > 15
     locations: [
-        {title: 'Tempe Town Lake',loc: {lat: 33.4316776, lng: -111.9276565}},
-        {title: 'Desert Botanical Garden', loc: {lat: 33.460598, lng: -111.947776}}
+        {title: 'Tempe Town Lake', lat: 33.4316776, lng: -111.9276565},
+        {title: 'Desert Botanical Garden', lat: 33.460598, lng: -111.947776}
     ],
     // Centerpoint for map, currently ASU
     mapStart: {lat: 33.4242399, lng: -111.9280527},
@@ -226,87 +226,82 @@ var model = {
     ]
 }
 
+var Location = function(data) {
+    this.title = ko.observable(data.title);
+    this.loc = ko.observable(data.loc);
+}
+
+var Pin = function(map, data) {
+    this.title = ko.observable(data.title);
+    this.lat = ko.observable(data.lat);
+    this.lng = ko.observable(data.lng);
+
+    viewModel.setMarker(data);
+}
+
+var InfoWindow = function(marker, map) {
+    infoWindow = new google.maps.InfoWindow
+    if (infoWindow.marker != marker) {
+        infoWindow.marker = marker;
+        infoWindow.setContent('<div>' + marker.title + '</div>');
+        infoWindow.addListener('closeclick', function() {
+            infoWindow.marker = null;
+        });
+        infoWindow.open(map, marker);
+    };
+}
+
 var viewModel = {
-    // Main initialization
+    locations: ko.observableArray([]),
+    markers: ko.observableArray([]),
     init: function() {
-        mapView.init();
+        this.render();
     },
-    getStart: function() {
-        return model.mapStart;
-    },
-    getStyles: function() {
-        return model.styles;
-    },
-    getMap: function() {
-        return model.map;
-    },
-    getLocations: function() {
-        return model.locations;
-    },
-    getInfoWindow: function() {
-        return model.infoWindow;
-    },
-    setInfoWindow: function(data) {
-        model.infoWindow = data;
-    },
-    setMap: function(map) {
+    render: function() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: model.mapStart,
+            styles: model.styles,
+            zoom: 11
+        });
         model.map = map;
+        model.locations.forEach(function(loc){
+            viewModel.locations.push( new Location(loc));
+            viewModel.markers.push( new Pin(map, loc));
+        });
     },
-    pushMarker: function(marker) {
-        model.markers.push(marker);
+    setMarker: function(data) {
+        map = model.map;
+        marker = new google.maps.Marker({
+            position: new google.maps.LatLng(data.lat,data.lng),
+            title: data.title,
+            animation: google.maps.Animation.DROP
+        });
+
+        marker.addListener('click', function() {
+            viewModel.bounceMarker(this);
+            new InfoWindow(this, map);
+        });
+
+        this.isVisible = ko.observable(false);
+
+        this.isVisible.subscribe(function(isFalse) {
+            if (isFalse) {
+                marker.setMap(map);
+            } else {
+                marker.setMap(null);
+            }
+        });
+
+        this.isVisible(true);
+    },
+    bounceMarker: function(marker) {
+        if (marker.getAnimation() !== google.maps.Animation.BOUNCE) {
+            marker.setAnimation(google.maps.Animation.BOUNCE);
+            setTimeout(function() {
+                marker.setAnimation(null);
+            }, 1500);
+        };
     }
 }
 
-var mapView = {
-    init: function() {
-        this.renderMap();
-        this.renderMarkers();
-    },
-    // render google map and store to the model
-    renderMap: function() {
-        var map = new google.maps.Map(document.getElementById('map'), {
-            center: viewModel.getStart(),
-            styles: viewModel.getStyles(),
-            zoom: 11
-        });
-        viewModel.setMap(map)
-    },
-    // render location markers and store in model
-    renderMarkers: function() {
-        viewModel.setInfoWindow(new google.maps.InfoWindow);
-        var locations = viewModel.getLocations();
-        for (var i = 0; i < locations.length; i++) {
-            var position = locations[i].loc;
-            var title = locations[i].title;
-            var marker = new google.maps.Marker({
-                map: viewModel.getMap(),
-                position: position,
-                title: title,
-                animation: google.maps.Animation.DROP,
-                id: i
-            });
-            viewModel.pushMarker(marker);
-            marker.addListener('click', function() {
-                toggleBounce(this);
-                mapView.populateInfoWindow(this, viewModel.getInfoWindow());
-            });
-            function toggleBounce(marker) {
-                if (marker.getAnimation() !== null) {
-                    marker.setAnimation(null);
-                } else {
-                    marker.setAnimation(google.maps.Animation.BOUNCE);
-                }
-            }
-        };
-    },
-    populateInfoWindow: function(marker, infoWindow) {
-        if (infoWindow.marker != marker) {
-            infoWindow.marker = marker;
-            infoWindow.setContent('<div>' + marker.title + '</div>');
-            infoWindow.addListener('closeclick', function() {
-                infoWindow.marker = null;
-            });
-            infoWindow.open(viewModel.getMap(), marker);
-        }
-    }
-}
+ko.applyBindings(viewModel)
