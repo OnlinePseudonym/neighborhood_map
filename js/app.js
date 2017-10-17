@@ -296,8 +296,11 @@ var viewModel = {
 
         viewModel.markers.push(marker);
     },
-    clickLoc: function(marker) {
+    clickLocation: function(marker) {
         new InfoWindow(marker, model.map, model.infoWindow);
+        model.center = marker.position;
+        model.map.panTo(model.center);
+        viewModel.bounceMarker(marker);
     },
     bounceMarker: function(marker) {
         if (marker.getAnimation() !== google.maps.Animation.BOUNCE) {
