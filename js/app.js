@@ -9,6 +9,7 @@ var model = {
     ],
     // Centerpoint for map, currently ASU
     mapStart: {lat: 33.4242399, lng: -111.9280527},
+    infoWindow: null,
     // Custom style from Snazzymap to express the
     // baron desert wasteland that is Arizona
     styles: [
@@ -242,6 +243,12 @@ var viewModel = {
     getLocations: function() {
         return model.locations;
     },
+    getInfoWindow: function() {
+        return model.infoWindow;
+    },
+    setInfoWindow: function(data) {
+        model.infoWindow = data;
+    },
     setMap: function(map) {
         model.map = map;
     },
@@ -266,6 +273,7 @@ var mapView = {
     },
     // render location markers and store in model
     renderMarkers: function() {
+        viewModel.setInfoWindow(new google.maps.InfoWindow);
         var locations = viewModel.getLocations();
         for (var i = 0; i < locations.length; i++) {
             var position = locations[i].loc;
@@ -278,6 +286,19 @@ var mapView = {
                 id: i
             });
             viewModel.pushMarker(marker);
+            marker.addListener('click', function() {
+                mapView.populateInfoWindow(this, viewModel.getInfoWindow());
+            });
         };
+    },
+    populateInfoWindow: function(marker, infoWindow) {
+        if (infoWindow.marker != marker) {
+            infoWindow.marker = marker;
+            infoWindow.setContent('<div>' + marker.title + '</div>');
+            infoWindow.addListener('closeclick', function() {
+                infoWindow.marker = null;
+            });
+            infoWindow.open(viewModel.getMap(), marker);
+        }
     }
 }
