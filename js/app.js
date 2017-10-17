@@ -8,7 +8,7 @@ var model = {
         {title: 'Desert Botanical Garden', lat: 33.460598, lng: -111.947776}
     ],
     // Centerpoint for map, currently ASU
-    mapStart: {lat: 33.4242399, lng: -111.9280527},
+    center: {lat: 33.4242399, lng: -111.9280527},
     infoWindow: null,
     // Custom style from Snazzymap to express the
     // baron desert wasteland that is Arizona
@@ -239,8 +239,7 @@ var Pin = function(map, data) {
     viewModel.setMarker(data);
 }
 
-var InfoWindow = function(marker, map) {
-    infoWindow = new google.maps.InfoWindow
+var InfoWindow = function(marker, map, infoWindow) {
     if (infoWindow.marker != marker) {
         infoWindow.marker = marker;
         infoWindow.setContent('<div>' + marker.title + '</div>');
@@ -252,25 +251,26 @@ var InfoWindow = function(marker, map) {
 }
 
 var viewModel = {
-    locations: ko.observableArray([]),
     markers: ko.observableArray([]),
+    pins: ko.observableArray([]),
     init: function() {
         this.render();
     },
     render: function() {
+        model.infoWindow = new google.maps.InfoWindow;
         var map = new google.maps.Map(document.getElementById('map'), {
-            center: model.mapStart,
+            center: model.center,
             styles: model.styles,
             zoom: 11
         });
         model.map = map;
         model.locations.forEach(function(loc){
-            viewModel.locations.push( new Location(loc));
-            viewModel.markers.push( new Pin(map, loc));
+            viewModel.pins.push( new Pin(map, loc));
         });
     },
     setMarker: function(data) {
         map = model.map;
+        infoWindow = model.infoWindow;
         marker = new google.maps.Marker({
             position: new google.maps.LatLng(data.lat,data.lng),
             title: data.title,
@@ -279,7 +279,7 @@ var viewModel = {
 
         marker.addListener('click', function() {
             viewModel.bounceMarker(this);
-            new InfoWindow(this, map);
+            new InfoWindow(this, map, infoWindow);
         });
 
         this.isVisible = ko.observable(false);
@@ -293,6 +293,11 @@ var viewModel = {
         });
 
         this.isVisible(true);
+
+        viewModel.markers.push(marker);
+    },
+    clickLoc: function(marker) {
+        new InfoWindow(marker, model.map, model.infoWindow);
     },
     bounceMarker: function(marker) {
         if (marker.getAnimation() !== google.maps.Animation.BOUNCE) {

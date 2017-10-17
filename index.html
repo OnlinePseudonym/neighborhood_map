@@ -9,8 +9,8 @@
         <div class="container">
             <h1>Local Places of Interest</h1>
             <input id="places-search" type="text" placeholder="Filter results">
-            <ul data-bind="foreach: locations">
-                <li data-bind="text: title"></li>
+            <ul data-bind="foreach: markers">
+                <li data-bind="text: title, click: $parent.clickLocation"></li>
             </ul>
         </div>
         <div id="map"></div>
