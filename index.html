@@ -6,7 +6,15 @@
         <link rel="stylesheet" href="css/styles.css">
     </head>
     <body>
-
+        <div class="container">
+            <h1>Local Places of Interest</h1>
+            <input id="places-search" type="text" placeholder="Filter results">
+        </div>
+        <div id="map"></div>
+        <script src="js/lib/knockout-3.2.0.js"></script>
         <script src="js/app.js"></script>
+        <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAT7rB34KyYFL8C34EpFwZiDnpn-S4WtbY&callback=viewModel.init">
+        </script>
     </body>
 </html>

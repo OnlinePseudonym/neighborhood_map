@@ -1,0 +1,27 @@
+.container {
+    height: 100%;
+    position: relative;
+    width: 340px;
+
+}
+
+#map {
+    height: 100%;
+    position: absolute;
+    left: 300px;
+    right: 0px;
+    bottom: 0px;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+
+h1 {
+    font-size: 24px;
+    text-align: center;
+}
