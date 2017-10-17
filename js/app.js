@@ -287,8 +287,16 @@ var mapView = {
             });
             viewModel.pushMarker(marker);
             marker.addListener('click', function() {
+                toggleBounce(this);
                 mapView.populateInfoWindow(this, viewModel.getInfoWindow());
             });
+            function toggleBounce(marker) {
+                if (marker.getAnimation() !== null) {
+                    marker.setAnimation(null);
+                } else {
+                    marker.setAnimation(google.maps.Animation.BOUNCE);
+                }
+            }
         };
     },
     populateInfoWindow: function(marker, infoWindow) {
