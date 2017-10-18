@@ -8,15 +8,15 @@
     <body>
         <div class="container">
             <h1>Local Places of Interest</h1>
-            <input id="places-search" type="text" placeholder="Filter results">
+            <p>Search: <input data-bind="textInput: searchQuery" /></p>
             <ul data-bind="foreach: markers">
-                <li data-bind="text: title, click: $parent.clickLocation"></li>
+                <li data-bind="text: title, click: clickLocation"></li>
             </ul>
         </div>
         <div id="map"></div>
         <script src="js/lib/knockout-3.2.0.js"></script>
         <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAT7rB34KyYFL8C34EpFwZiDnpn-S4WtbY&v=3&callback=viewModel.init">
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAT7rB34KyYFL8C34EpFwZiDnpn-S4WtbY&v=3&callback=init">
         </script>
         <script src="js/app.js"></script>
     </body>
