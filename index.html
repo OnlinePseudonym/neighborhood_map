@@ -9,7 +9,7 @@
         <div class="container">
             <h1>Local Places of Interest</h1>
             <p>Search: <input data-bind="textInput: searchQuery" /></p>
-            <ul data-bind="foreach: pins">
+            <ul data-bind="foreach: filterPins">
                 <li data-bind="text: title, click: clickLocation"></li>
             </ul>
         </div>
