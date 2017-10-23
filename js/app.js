@@ -224,13 +224,13 @@ var model = {
     ]
 }
 
-var Pin = function(data, map) {
+var Pin = function(title, lat, lng , map) {
     var self = this;
     var infoWindow = model.infoWindow;
 
-    self.title = ko.observable(data.title);
-    self.lat = ko.observable(data.lat);
-    self.lng = ko.observable(data.lng);
+    self.title = ko.observable(title);
+    self.lat = ko.observable(lat);
+    self.lng = ko.observable(lng);
     self.isVisible = ko.observable(false);
 
     self.marker = new google.maps.Marker({
@@ -272,6 +272,7 @@ var viewModel = function() {
 
     self.searchQuery = ko.observable(""),
     self.pins = ko.observableArray([]),
+    self.markers = ko.observableArray([]),
 
     self.filterPins = ko.computed(function() {
         var query = self.searchQuery().toLowerCase();
@@ -290,17 +291,18 @@ var viewModel = function() {
     };
 
     self.render = function() {
-        model.infoWindow = new google.maps.InfoWindow;
-        var map = new google.maps.Map(document.getElementById('map'), {
+        model.map = new google.maps.Map(document.getElementById('map'), {
             center: model.center,
             styles: model.styles,
             zoom: 11
         });
+        model.infoWindow = new google.maps.InfoWindow;
 
-        model.map = map;
+        self.clearMarkers();
+        self.pins.removeAll();
 
         model.locations.forEach(function(loc){
-            self.pins.push( new Pin(loc, map));
+            self.pins.push( new Pin(loc.title, loc.lat, loc.lng, model.map));
         });
     };
 
@@ -319,20 +321,55 @@ var viewModel = function() {
         };
     };
 
-    self.getEvents = function() {
-        console.log('Events');
+    self.clearMarkers = function() {
+        var pins = self.pins();
+        for ( i = 0; i < pins.length; i++) {
+            pins[i].isVisible(false);
+            console.log(pins[i]);
+        };
+    };
+
+    self.getEvents = function(query) {
+        var oArgs = {
+            app_key: "WrfBdLZ9LVFggD8G",
+            what: query ? query : '',
+            where: "Phoenix",
+            when: "This Week",
+            page_size: 20,
+        };
+        console.log(oArgs.what);
+        EVDB.API.call("/events/search", oArgs, function(oData){
+            var map = model.map;
+            var events = oData.events.event;
+
+            self.clearMarkers();
+            self.pins.removeAll();
+
+            for ( i = 0; i < Object.keys(events).length; i++) {
+                self.pins.push( new Pin(
+                    events[i].title,
+                    events[i].latitude,
+                    events[i].longitude,
+                    map
+                ));
+            };
+        });
+    };
+
+    self.getAll = function() {
+        self.getEvents();
     };
 
     self.getConcerts = function() {
-        console.log('Music');
+        self.getEvents("concerts");
     };
 
-    self.getKids = function() {
-        console.log('Children');
+    self.getChildren = function() {
+        self.getEvents("children");
     };
 
     self.getSingles = function() {
-        console.log('Singles');
+        self.getEvents("single -tag:singles");
     };
 }
 
