@@ -5,16 +5,21 @@
         <title>Neighborhood Map</title>
         <link rel="stylesheet" href="css/styles.css">
     </head>
-    <body>
+    <body>  mmmmnmhj     vfgd fvgfdg    dggggggggggtythggv v
         <div class="container">
             <h1>Local Places of Interest</h1>
             <p>Search: <input data-bind="textInput: searchQuery" /></p>
+            <button data-bind="click: getEvents">All Events</button>
+            <button data-bind="click: getConcerts">Concerts</button>
+            <button data-bind="click: getKids">For Children</button>
+            <button data-bind="click: getSingles">For Singles</button>
             <ul data-bind="foreach: filterPins">
                 <li data-bind="text: title, click: clickLocation"></li>
             </ul>
         </div>
         <div id="map"></div>
         <script src="js/lib/knockout-3.2.0.js"></script>
+        <script src="http://api.eventful.com/js/api"></script>
         <script async defer
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAT7rB34KyYFL8C34EpFwZiDnpn-S4WtbY&v=3&callback=init">
         </script>

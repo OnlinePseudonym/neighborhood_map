@@ -318,6 +318,22 @@ var viewModel = function() {
             }, 1500);
         };
     };
+
+    self.getEvents = function() {
+        console.log('Events');
+    };
+
+    self.getConcerts = function() {
+        console.log('Music');
+    };
+
+    self.getKids = function() {
+        console.log('Children');
+    };
+
+    self.getSingles = function() {
+        console.log('Singles');
+    };
 }
 
 function init() {
