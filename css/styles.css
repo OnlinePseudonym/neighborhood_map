@@ -38,7 +38,7 @@ button {
 }
 
 li:hover {
-    color: #32c4fe;
+    background-color: #32c4fe;
 }
 
 .btn-container{
@@ -63,24 +63,45 @@ li:hover {
     border: 1px solid #f00;
 }
 
+.bottom-nav {
+    color: #ecd5c3;
+    background: #1c1b1b;
+    position: fixed;
+    width: 100%;
+    height: 15rem;
+    z-index: 9;
+    overflow-y: scroll;
+    bottom: -15rem;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+.open-nav {
+    bottom: 0;
+}
+
+.filter-list {
+    position: absolute;
+    display: flex;
+    flex-wrap: wrap;
+    height: 100%;
+}
+
+.list-items {
+    display: block;
+    background-color: #464646;
+    flex-grow: 1;
+    padding: 1em;
+    margin: .25em;
+}
+
 #topnav{
     height: 6.5rem;
     z-index: 1;
     transition: 0.5s;
     background-color: #1c1b1b;
     color: #ecd5c3;
-}
-
-#sidenav {
-    height: 85%;
-    width: 0;
-    z-index: 3;
-    overflow-x: hidden;
-    transition: 0.5s;
-    top: 6.5rem;
-    background-color: #1c1b1b;
-    color: #ecd5c3;
-    padding-top: 1.25rem
 }
 
 #map {

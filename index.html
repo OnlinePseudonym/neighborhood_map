@@ -17,15 +17,15 @@
                 <button data-bind="click: render">Editor's Picks</button>
             </div>
         </div>
-        <div id="sidenav" class="container">
+        <div class="container bottom-nav" id="bottom-nav">
             <span class="closebtn" data-bind="click: closeNav">&times;</span>
-            <p>Filter: <input data-bind="textInput: searchQuery" /></p>
-            <ul data-bind="foreach: filterPins">
-                <li data-bind="text: title, click: clickLocation"></li>
+            <p>Filter: <input data-bind="textInput: searchQuery"></p>
+            <ul class="filter-list" data-bind="foreach: filterPins">
+                <li class="list-items" data-bind="text: title, click: clickLocation"></li>
             </ul>
         </div>
         <div id="nav-toggle" class="container">
-            <span data-bind="click: openNav">&#9776;</span>
+            <span data-bind="click: toggleNav">&#9776;</span>
         </div>
         <div id="map" class="container">
         </div>

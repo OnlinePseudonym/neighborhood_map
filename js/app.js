@@ -352,10 +352,7 @@ var viewModel = function() {
                 ));
             };
         });
-
-        if (window.getComputedStyle(document.getElementById('sidenav')).getPropertyValue('width') == '0px') {
-            self.openNav();
-        };
+        self.openNav();
     };
 
     self.getAll = function() {
@@ -375,11 +372,17 @@ var viewModel = function() {
     };
 
     self.openNav = function() {
-        document.getElementById("sidenav").style.width = "240px";
+        document.getElementById("bottom-nav").classList.add("open-nav");
+    }
+
+    self.toggleNav = function() {
+        //document.getElementById("sidenav").style.width = "240px";
+        document.getElementById("bottom-nav").classList.toggle("open-nav");
     };
 
     self.closeNav = function() {
-        document.getElementById("sidenav").style.width = "0";
+        //document.getElementById("sidenav").style.width = "0";
+        document.getElementById("bottom-nav").classList.remove("open-nav");
     };
 }
 
