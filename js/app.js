@@ -352,6 +352,10 @@ var viewModel = function() {
                 ));
             };
         });
+
+        if (window.getComputedStyle(document.getElementById('sidenav')).getPropertyValue('width') == '0px') {
+            self.openNav();
+        };
     };
 
     self.getAll = function() {

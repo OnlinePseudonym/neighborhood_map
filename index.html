@@ -6,24 +6,29 @@
         <link rel="stylesheet" href="css/styles.css">
     </head>
     <body>
-        <div id="sidenav">
-            <span class="closebtn" data-bind="click: closeNav">&times;</span>
+        <div id="topnav" class="container">
             <h1>Find Someplace New!</h1>
+            <hr>
             <div class="btn-container">
                 <button data-bind="click: getAll">All Events</button>
                 <button data-bind="click: getConcerts">Concerts</button>
                 <button data-bind="click: getChildren">For Children</button>
                 <button data-bind="click: getSingles">For Singles</button>
-                <button data-bind="click: render">Default</button>
+                <button data-bind="click: render">Editor's Picks</button>
             </div>
-            <hr>
-            <p>Search: <input data-bind="textInput: searchQuery" /></p>
+        </div>
+        <div id="sidenav" class="container">
+            <span class="closebtn" data-bind="click: closeNav">&times;</span>
+            <p>Filter: <input data-bind="textInput: searchQuery" /></p>
             <ul data-bind="foreach: filterPins">
                 <li data-bind="text: title, click: clickLocation"></li>
             </ul>
         </div>
-        <div id="map"></div>
-        <span id="nav-toggle" data-bind="click: openNav">&#9776;</span>
+        <div id="nav-toggle" class="container">
+            <span data-bind="click: openNav">&#9776;</span>
+        </div>
+        <div id="map" class="container">
+        </div>
         <script src="js/lib/knockout-3.2.0.js"></script>
         <script async defer src="http://api.eventful.com/js/api"></script>
         <script async defer
