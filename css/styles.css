@@ -31,23 +31,44 @@ ul {
 
 }
 
-#map {
-    height: 100%;
-    position: absolute;
-    left: 300px;
-    right: 0px;
-    bottom: 0px;
-}
-
-.sideNav {
-    height: 100%;
-    width: 0;
-    position: fixed;
-    width: 300px;
-}
-
 .btn-container{
     display: flex;
     flex-wrap: wrap;
     text-align: center;
+}
+
+.closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+#sidenav {
+    height: 100%;
+    position: fixed;
+    width: 0;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+#map {
+    height: 100%;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+}
+
+#nav-toggle {
+    position: absolute;
+    font-size: 36px;
+    top: 60px;
+    left: 10px;
+    z-index: 9;
 }

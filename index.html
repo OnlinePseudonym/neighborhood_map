@@ -6,10 +6,9 @@
         <link rel="stylesheet" href="css/styles.css">
     </head>
     <body>
-        <div class="sideNav">
+        <div id="sidenav">
+            <span class="closebtn" data-bind="click: closeNav">&times;</span>
             <h1>Find Someplace New!</h1>
-            <p>Search: <input data-bind="textInput: searchQuery" /></p>
-            <hr>
             <div class="btn-container">
                 <button data-bind="click: getAll">All Events</button>
                 <button data-bind="click: getConcerts">Concerts</button>
@@ -17,11 +16,14 @@
                 <button data-bind="click: getSingles">For Singles</button>
                 <button data-bind="click: render">Default</button>
             </div>
+            <hr>
+            <p>Search: <input data-bind="textInput: searchQuery" /></p>
             <ul data-bind="foreach: filterPins">
                 <li data-bind="text: title, click: clickLocation"></li>
             </ul>
         </div>
         <div id="map"></div>
+        <span id="nav-toggle" data-bind="click: openNav">&#9776;</span>
         <script src="js/lib/knockout-3.2.0.js"></script>
         <script async defer src="http://api.eventful.com/js/api"></script>
         <script async defer

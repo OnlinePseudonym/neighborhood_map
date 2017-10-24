@@ -325,7 +325,6 @@ var viewModel = function() {
         var pins = self.pins();
         for ( i = 0; i < pins.length; i++) {
             pins[i].isVisible(false);
-            console.log(pins[i]);
         };
     };
 
@@ -337,7 +336,6 @@ var viewModel = function() {
             when: "This Week",
             page_size: 20,
         };
-        console.log(oArgs.what);
         EVDB.API.call("/events/search", oArgs, function(oData){
             var map = model.map;
             var events = oData.events.event;
@@ -370,6 +368,14 @@ var viewModel = function() {
 
     self.getSingles = function() {
         self.getEvents("single -tag:singles");
+    };
+
+    self.openNav = function() {
+        document.getElementById("sidenav").style.width = "240px";
+    };
+
+    self.closeNav = function() {
+        document.getElementById("sidenav").style.width = "0";
     };
 }
 
