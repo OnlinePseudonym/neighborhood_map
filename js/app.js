@@ -4,12 +4,12 @@ var model = {
     infoWindow: null,
     center: {lat: 33.4483771, lng: -112.0740373},
     locations: [
-        {title: 'Tempe Town Lake', url:'http://www.com', lat: 33.4316776, lng: -111.9276565},
-        {title: 'Desert Botanical Garden', url:'http://www.com', lat: 33.460598, lng: -111.947776},
-        {title: 'Florencia Pizza', url:'http://www.com', lat: 33.3164068, lng: -112.0034161},
-        {title: 'Top Golf', url:'http://www.com', lat: 33.5410494, lng: -111.8768597},
-        {title: 'Phoenix Zoo', url:'http://www.com', lat: 33.4498214, lng: -111.949203},
-        {title: 'Gila River Arena', url:'http://www.com', lat: 33.5319368, lng: -112.261187}
+        {title: 'Tempe Town Lake', url:'http://www.tempe.gov/city-hall/community-development/tempe-town-lake', lat: 33.4316776, lng: -111.9276565},
+        {title: 'Desert Botanical Garden', url:'https://www.dbg.org/', lat: 33.460598, lng: -111.947776},
+        {title: 'Florencia Pizza', url:'http://florenciapizzabistro.com/', lat: 33.3164068, lng: -112.0034161},
+        {title: 'Top Golf', url:'https://topgolf.com/us/', lat: 33.5410494, lng: -111.8768597},
+        {title: 'Phoenix Zoo', url:'http://www.phoenixzoo.org/', lat: 33.4498214, lng: -111.949203},
+        {title: 'Gila River Arena', url:'http://www.gilariverarena.com/', lat: 33.5319368, lng: -112.261187}
     ],
     styles: [
         {
@@ -230,18 +230,16 @@ var Pin = function(title, link, lat, lng , map, eventStart, eventStop) {
     var infoWindow = model.infoWindow;
 
     self.formatDate = function(date) {
-        if (date != null) {
-            var months = ["Jan", "Feb", "Mar", "Apr",
-                "May", "Jun", "Jul", "Aug", "Sept",
-                "Oct", "Nov", "Dec"
-            ];
+        var months = ["Jan", "Feb", "Mar", "Apr",
+            "May", "Jun", "Jul", "Aug", "Sept",
+            "Oct", "Nov", "Dec"
+        ];
 
-            var day = date.getDate();
-            var month = date.getMonth();
-            var year = date.getFullYear();
+        var day = date.getDate();
+        var month = date.getMonth();
+        var year = date.getFullYear();
 
-            return day + ' ' + months[month] + ' ' + year;
-        }
+        return day + ' ' + months[month] + ' ' + year;
     }
 
     var formattedStart = self.formatDate(new Date(eventStart));
@@ -283,7 +281,15 @@ var Pin = function(title, link, lat, lng , map, eventStart, eventStop) {
 var InfoWindow = function(marker, pin, map, infoWindow) {
     if (infoWindow.marker != marker) {
         infoWindow.marker = marker;
-        infoWindow.setContent('<div>' + marker.title + '</div><a href="' + pin.link() + '">link</a><div>' + pin.start() + ' - ' + pin.stop() + '</div>');
+        if (pin.start() != 'NaN undefined NaN'){
+            if (pin.start() > pin.stop()) {
+                infoWindow.setContent('<div>' + marker.title + '</div><a href="' + pin.link() + '">link</a><div>' + pin.start() + ' - ' + pin.stop() + '</div>');
+            } else {
+                infoWindow.setContent('<div>' + marker.title + '</div><a href="' + pin.link() + '">link</a><div>' + pin.start() + '</div>');
+            }
+        } else {
+            infoWindow.setContent('<div>' + marker.title + '</div><a href="' + pin.link() + '">link</a>');
+        };
         infoWindow.addListener('closeclick', function() {
             infoWindow.marker = null;
         });
