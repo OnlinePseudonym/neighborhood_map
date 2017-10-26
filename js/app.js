@@ -1,14 +1,15 @@
 var model = {
     map: null,
+    bounds: null,
     infoWindow: null,
     center: {lat: 33.4483771, lng: -112.0740373},
     locations: [
-        {title: 'Tempe Town Lake', lat: 33.4316776, lng: -111.9276565},
-        {title: 'Desert Botanical Garden', lat: 33.460598, lng: -111.947776},
-        {title: 'Florencia Pizza', lat: 33.3164068, lng: -112.0034161},
-        {title: 'Top Golf', lat: 33.5410494, lng: -111.8768597},
-        {title: 'Phoenix Zoo', lat: 33.4498214, lng: -111.949203},
-        {title: 'Gila River Arena', lat: 33.5319368, lng: -112.261187}
+        {title: 'Tempe Town Lake', url:'http://www.com', lat: 33.4316776, lng: -111.9276565},
+        {title: 'Desert Botanical Garden', url:'http://www.com', lat: 33.460598, lng: -111.947776},
+        {title: 'Florencia Pizza', url:'http://www.com', lat: 33.3164068, lng: -112.0034161},
+        {title: 'Top Golf', url:'http://www.com', lat: 33.5410494, lng: -111.8768597},
+        {title: 'Phoenix Zoo', url:'http://www.com', lat: 33.4498214, lng: -111.949203},
+        {title: 'Gila River Arena', url:'http://www.com', lat: 33.5319368, lng: -112.261187}
     ],
     styles: [
         {
@@ -224,13 +225,34 @@ var model = {
     ]
 }
 
-var Pin = function(title, lat, lng , map) {
+var Pin = function(title, link, lat, lng , map, eventStart, eventStop) {
     var self = this;
     var infoWindow = model.infoWindow;
 
+    self.formatDate = function(date) {
+        if (date != null) {
+            var months = ["Jan", "Feb", "Mar", "Apr",
+                "May", "Jun", "Jul", "Aug", "Sept",
+                "Oct", "Nov", "Dec"
+            ];
+
+            var day = date.getDate();
+            var month = date.getMonth();
+            var year = date.getFullYear();
+
+            return day + ' ' + months[month] + ' ' + year;
+        }
+    }
+
+    var formattedStart = self.formatDate(new Date(eventStart));
+    var formattedStop = self.formatDate(new Date(eventStop));
+
     self.title = ko.observable(title);
+    self.link = ko.observable(link);
     self.lat = ko.observable(lat);
     self.lng = ko.observable(lng);
+    self.start = ko.observable(formattedStart);
+    self.stop = ko.observable(formattedStop);
     self.isVisible = ko.observable(false);
 
     self.marker = new google.maps.Marker({
@@ -242,7 +264,7 @@ var Pin = function(title, lat, lng , map) {
 
     self.marker.addListener('click', function() {
         bounceMarker(self.marker);
-        new InfoWindow(self.marker, map, infoWindow);
+        new InfoWindow(self.marker, self, map, infoWindow);
     });
 
     self.isVisible.subscribe(function(isFalse) {
@@ -254,12 +276,14 @@ var Pin = function(title, lat, lng , map) {
     });
 
     self.isVisible(true);
+    model.bounds.extend(self.marker.position);
+    model.map.fitBounds(model.bounds);
 }
 
-var InfoWindow = function(marker, map, infoWindow) {
+var InfoWindow = function(marker, pin, map, infoWindow) {
     if (infoWindow.marker != marker) {
         infoWindow.marker = marker;
-        infoWindow.setContent('<div>' + marker.title + '</div>');
+        infoWindow.setContent('<div>' + marker.title + '</div><a href="' + pin.link() + '">link</a><div>' + pin.start() + ' - ' + pin.stop() + '</div>');
         infoWindow.addListener('closeclick', function() {
             infoWindow.marker = null;
         });
@@ -296,18 +320,25 @@ var viewModel = function() {
             styles: model.styles,
             zoom: 11
         });
+
+        google.maps.event.addDomListener(window, "resize", function() {
+            google.maps.event.trigger(model.map, "resize");
+            model.map.fitBounds(model.bounds);
+        });
+
+        model.bounds = new google.maps.LatLngBounds();
         model.infoWindow = new google.maps.InfoWindow;
 
         self.clearMarkers();
         self.pins.removeAll();
 
         model.locations.forEach(function(loc){
-            self.pins.push( new Pin(loc.title, loc.lat, loc.lng, model.map));
+            self.pins.push( new Pin(loc.title, loc.url, loc.lat, loc.lng, model.map));
         });
     };
 
     self.clickLocation = function(pin) {
-        new InfoWindow(pin.marker, model.map, model.infoWindow);
+        new InfoWindow(pin.marker, pin, model.map, model.infoWindow);
         model.map.panTo(pin.marker.position);
         self.bounceMarker(pin.marker);
     };
@@ -331,9 +362,9 @@ var viewModel = function() {
     self.getEvents = function(query) {
         var oArgs = {
             app_key: "WrfBdLZ9LVFggD8G",
-            what: query ? query : '',
-            where: "Phoenix",
-            when: "This Week",
+            keyword: query ? query : '',
+            location: "Phoenix",
+            date: "This Week",
             page_size: 20,
         };
         EVDB.API.call("/events/search", oArgs, function(oData){
@@ -346,9 +377,12 @@ var viewModel = function() {
             for ( i = 0; i < Object.keys(events).length; i++) {
                 self.pins.push( new Pin(
                     events[i].title,
+                    events[i].url,
                     events[i].latitude,
                     events[i].longitude,
-                    map
+                    map,
+                    events[i].start_time,
+                    events[i].stop_time
                 ));
             };
         });
