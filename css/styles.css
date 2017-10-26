@@ -1,178 +1,151 @@
-
-html,
-body {
-    background-color: #1c1b1b;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font: 100%/1.25 Arial, Helvetica, sans-serif;
-    max-width: 60em;
-    min-width: 200px;
-    width: 100%;
-    margin: auto;
+html, body {
+	background-color: #1c1b1b;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font: 100%/1.25 Arial, Helvetica, sans-serif;
+	max-width: 60em;
+	min-width: 200px;
+	width: 100%;
+	margin: auto;
 }
-
-h1, h2, h3, h4, h5, h6{
-    margin: 0;
-    padding: 0;
-    font-weight: normal;
+h1, h2, h3, h4, h5, h6 {
+	margin: 0;
+	padding: 0;
+	font-weight: normal;
 }
-
 h1 {
-    font-size: 2rem;
-    text-align: center;
-    display: none;
+	font-size: 2rem;
+	text-align: center;
+	display: none;
 }
-
 p {
-    display: flex;
-    font-size: 1.5rem;
-    padding-top: .25rem;
-    margin: auto;
+	display: flex;
+	font-size: 1.5rem;
+	padding-top: .25rem;
+	margin: auto;
 }
-
 input {
-    width: 80%;
+	width: 80%;
 }
-
 button {
-    flex-grow: 1;
-    background-color: #32c4fe; /* Green */
-    border: none;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 1rem;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: .5rem;
-    text-shadow: 2px 2px 8px #000;
-    padding: .25rem;
+	flex-grow: 1;
+	background-color: #32c4fe;
+	border: none;
+	color: white;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 1rem;
+	margin: 4px 2px;
+	cursor: pointer;
+	border-radius: .5rem;
+	text-shadow: 2px 2px 8px #000;
+	padding: .25rem;
 }
-
 button:hover {
-    background: linear-gradient(#32c4fe, #196280)
+	background: linear-gradient(#32c4fe, #196280)
 }
-
-.btn-container{
-    display: flex;
-    flex-wrap: wrap;
-    text-align: center;
-    min-width: 13rem;
+.btn-container {
+	display: flex;
+	flex-wrap: wrap;
+	text-align: center;
+	min-width: 13rem;
 }
-
 .events-btn {
-    flex-basis: 40%;
+	flex-basis: 40%;
 }
-
 .concerts-btn {
-    flex-basis: 40%;
+	flex-basis: 40%;
 }
-
 .children-btn {
-    flex-basis: 40%;
+	flex-basis: 40%;
 }
-
 .singles-btn {
-    flex-basis: 40%;
+	flex-basis: 40%;
 }
-
 .default-btn {
-    flex-basis: 80%;
+	flex-basis: 80%;
 }
-
 .closebtn {
-    position: absolute;
-    top: -.5rem;
-    right: 0;
-    font-size: 2.25rem;
+	position: absolute;
+	top: -.5rem;
+	right: 0;
+	font-size: 2.25rem;
 }
-
 .container {
-    max-width: 60rem;
-    width: 100%;
-    margin: auto;
-    position: absolute;
-    flex: 1;
-    /*border: 1px solid #f00;*/
+	max-width: 60rem;
+	width: 100%;
+	margin: auto;
+	position: absolute;
+	flex: 1;
 }
-
-
 .bottom-nav {
-    color: #ecd5c3;
-    background: #1c1b1b;
-    position: fixed;
-    width: 100%;
-    height: 10rem;
-    z-index: 9;
-    bottom: -10rem;
-    -webkit-transition: all 0.5s ease;
-    -moz-transition: all 0.5s ease;
-    transition: all 0.5s ease;
+	color: #ecd5c3;
+	background: #1c1b1b;
+	position: fixed;
+	width: 100%;
+	height: 10rem;
+	z-index: 9;
+	bottom: -10rem;
+	-webkit-transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	transition: all 0.5s ease;
 }
-
 .open-nav {
-    bottom: 0;
+	bottom: 0;
 }
-
 .filter-list {
-    margin: auto;
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    max-height: 75%;
-    overflow-y: scroll;
+	margin: auto;
+	position: relative;
+	display: flex;
+	flex-wrap: wrap;
+	max-height: 75%;
+	overflow-y: scroll;
 }
-
 .list-items {
-    flex-grow: 1;
-    font-size: 1rem;
-    display: inline-block;
-    background-color: #32c4fe;
-    color: white;
-    padding: .25em;
-    margin: 4px 2px;
-    text-shadow: 2px 2px 6px #000;
-    border-radius: .5rem;
-    text-align: center;
-    cursor: pointer;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 10rem;
-    text-decoration: none;
+	flex-grow: 1;
+	font-size: 1rem;
+	display: inline-block;
+	background-color: #32c4fe;
+	color: white;
+	padding: .25em;
+	margin: 4px 2px;
+	text-shadow: 2px 2px 6px #000;
+	border-radius: .5rem;
+	text-align: center;
+	cursor: pointer;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 10rem;
+	text-decoration: none;
 }
-
 .list-items:hover {
-    background: linear-gradient(#32c4fe, #196280)
+	background: linear-gradient(#32c4fe, #196280)
 }
-
-.top-nav{
-    position: absolute;
-    height: 6.5rem;
-    z-index: 1;
-    transition: 0.5s;
-    background-color: #1c1b1b;
-    color: #ecd5c3;
+.top-nav {
+	position: absolute;
+	height: 6.5rem;
+	z-index: 1;
+	transition: 0.5s;
+	background-color: #1c1b1b;
+	color: #ecd5c3;
 }
-
 .map {
-    height: 85%;
-    width: 100%;
-    position: relative;
-    top: 6.5rem;
-    z-index: 0;
-    padding-top: 1.25rem;
-    /*flex: 0 0 auto;*/
+	height: 85%;
+	width: 100%;
+	position: relative;
+	top: 6.5rem;
+	z-index: 0;
+	padding-top: 1.25rem;
 }
-
 #nav-toggle {
-    font-size: 2.5rem;
-    margin-top: 6.5rem;
-    padding-top: 2.5rem;
-    margin-left: .5rem;
-    width: 5rem;
-    z-index: 2;
+	font-size: 2.5rem;
+	margin-top: 6.5rem;
+	padding-top: 2.5rem;
+	margin-left: .5rem;
+	width: 5rem;
+	z-index: 2;
 }
