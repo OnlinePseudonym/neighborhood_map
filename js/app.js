@@ -315,12 +315,13 @@ var InfoWindow = function (marker, pin, map, infoWindow) {
     }
 };
 
-var viewModel = function () {
+var ViewModel = function () {
     var self = this;
 
     self.searchQuery = ko.observable("");
     self.pins = ko.observableArray([]);
     self.markers = ko.observableArray([]);
+    self.isOpen = ko.observable(false);
     // this function filters our array of Pins based on searchQuery user input
     self.filterPins = ko.computed(function () {
         var query = self.searchQuery().toLowerCase();
@@ -361,6 +362,7 @@ var viewModel = function () {
         model.locations.forEach(function (loc) {
             self.pins.push(new Pin(loc.title, loc.url, loc.lat, loc.lng, model.map));
         });
+        self.isOpen(true);
     };
     // initialize infoWindow, pan map and bounce the relevant marker when an
     // item is clicked in the list
@@ -419,7 +421,7 @@ var viewModel = function () {
         });
         // opens bottom-nav to display fliterable list when a new query is
         // performed
-        self.openNav();
+        self.isOpen(true);
     };
     // get events with no query passed
     self.getAll = function () {
@@ -437,17 +439,13 @@ var viewModel = function () {
     self.getSingles = function () {
         self.getEvents("single -tag:singles");
     };
-    // open bottom nav
-    self.openNav = function () {
-        document.getElementById("bottom-nav").classList.add("open-nav");
-    };
     // toggle bottom nav when hamburger icon is clicked
     self.toggleNav = function () {
-        document.getElementById("bottom-nav").classList.toggle("open-nav");
+        self.isOpen(!self.isOpen());
     };
     // close bottom nav when 'x' is clicked
     self.closeNav = function () {
-        document.getElementById("bottom-nav").classList.remove("open-nav");
+        self.isOpen(false);
     };
 };
 // initialize map after loading googleapi
@@ -455,4 +453,4 @@ function init() {
     viewModel.init();
 }
 // apply ko.bindings
-ko.applyBindings(viewModel());
+ko.applyBindings(ViewModel());

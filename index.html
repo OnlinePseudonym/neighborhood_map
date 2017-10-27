@@ -16,7 +16,7 @@
                 <button class="default-btn" data-bind="click: render">Editor's Picks</button>
             </div>
         </div>
-        <div class="container bottom-nav" id="bottom-nav">
+        <div class="container bottom-nav" id="bottom-nav" data-bind="css: { 'open-nav': isOpen() === true }">
             <span class="closebtn" data-bind="click: closeNav">&times;</span>
             <p>Filter: <input data-bind="textInput: searchQuery"></p>
             <ul class="filter-list" data-bind="foreach: filterPins">
