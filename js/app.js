@@ -299,7 +299,8 @@ var InfoWindow = function (marker, pin, map, infoWindow) {
     // ensure the infoWindow isn't already open for this marker
     if (infoWindow.marker !== marker) {
         var formattedVenue = pin.venue().replace(/ /g, "+");
-        console.log(formattedVenue);
+        // url to access foursquare api and get information about
+        // the current marker location
         var url = 'https://api.foursquare.com/v2/venues/search?ll=' +
             pin.lat() + ',' + pin.lng() + '&query=' + formattedVenue +
             '&client_id=' + model.fourSquare.id + '&client_secret=' +
@@ -312,25 +313,32 @@ var InfoWindow = function (marker, pin, map, infoWindow) {
             // check to see if an end date was passed ot the pin.stop
             if (pin.start() > pin.stop()) {
                 infoWindow.setContent(infoWindow.getContent() +
-                    '<a href="' + pin.link() + '">Event link</a><div>'
-                    + pin.start() + ' - ' + pin.stop() + '</div>');
+                    '<a href="' + pin.link() + '">Event link</a><div>' +
+                    pin.start() + ' - ' + pin.stop() + '</div><div><i>' +
+                    '<sub>information brought to you by Eventful</sub>' +
+                    '</i></div>');
             } else {
                 infoWindow.setContent(infoWindow.getContent() +
-                '<a href="' + pin.link() + '">Event link</a><div>'
-                + pin.start() + '</div>');
+                '<a href="' + pin.link() + '">Event link</a><div>' +
+                pin.start() + '</div><div><i><sub>information brought to' +
+                'you by Eventful</sub></i></div>');
             }
-        };
-        console.log(marker.title);
-        console.log(url);
+        }
+        // make call to foursquare and update the infoWindow with relevant
+        // info on the current marker location
         $.getJSON(url, function(data) {
             var venue = data.response.venues[0];
-            console.log(data)
             var venueLink = venue.url;
-            console.log(venueLink);
             var checkIns = venue.stats.checkinsCount;
-            console.log(checkIns)
-            infoWindow.setContent(infoWindow.getContent() + '<div>')
+            infoWindow.setContent(infoWindow.getContent() + '<a href="' +
+                venueLink + '">Venue link</a><div>' + pin.venue() +
+                ' has had ' + checkIns + ' check ins!</div><div><i><sub>' +
+                'information brought to you by Foursquare</sub></i></div>');
+        }).fail(function(error) {
+            infoWindow.setContent(infoWindow.getContent() + '<div><b>Error ' +
+            'contacting Foursquare</b></div>');
         })
+        ;
         // closes infoWindow
         infoWindow.addListener('closeclick', function () {
             infoWindow.marker = null;
@@ -477,6 +485,10 @@ var ViewModel = function () {
 // initialize map after loading googleapi
 function init() {
     ViewModel.init();
+}
+// alert use something went wrong when loading the map
+function loadError() {
+    alert("Sorry, failed to load map, please try again later.");
 }
 // apply ko.bindings
 ko.applyBindings(ViewModel());
