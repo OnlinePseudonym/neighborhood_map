@@ -226,13 +226,17 @@ var model = {
             ]
         },
         {}
-    ]
+    ],
+    fourSquare: {
+        id: 'PPLEBYJGD530OQE0MA1Y2U0DWCQCWOQLFPLFLM0P4FBVGFLX',
+        secret: '2KHRKSRRYIZYREN0G52AQVSPNU4HIGWY3MZUX3IS1Y1QRN5Q'
+    }
 };
 
 // This function takes in a text title, relevant url, lat/lng coords,
 // a google map, and an event start and stop time and creates a Pin
 // to store and create markers on the map
-var Pin = function (title, link, lat, lng, map, eventStart, eventStop) {
+var Pin = function (title, link, lat, lng, map, venue, eventStart, eventStop) {
     var self = this;
     // get infoWindow from model to ensure only one is open at a time
     var infoWindow = model.infoWindow;
@@ -258,6 +262,7 @@ var Pin = function (title, link, lat, lng, map, eventStart, eventStop) {
     self.link = ko.observable(link);
     self.lat = ko.observable(lat);
     self.lng = ko.observable(lng);
+    self.venue = ko.observable(venue);
     self.start = ko.observable(formattedStart);
     self.stop = ko.observable(formattedStop);
     self.isVisible = ko.observable(false);
@@ -293,19 +298,39 @@ var Pin = function (title, link, lat, lng, map, eventStart, eventStop) {
 var InfoWindow = function (marker, pin, map, infoWindow) {
     // ensure the infoWindow isn't already open for this marker
     if (infoWindow.marker !== marker) {
+        var formattedVenue = pin.venue().replace(/ /g, "+");
+        console.log(formattedVenue);
+        var url = 'https://api.foursquare.com/v2/venues/search?ll=' +
+            pin.lat() + ',' + pin.lng() + '&query=' + formattedVenue +
+            '&client_id=' + model.fourSquare.id + '&client_secret=' +
+            model.fourSquare.secret + '&v=20171026';
         infoWindow.marker = marker;
         // check to see if a date was passed to pin.start to see if it needs
         // to be appended to our infoWindow
+        infoWindow.setContent('<div><b>' + marker.title + '</b></div>');
         if (pin.start() != 'NaN undefined NaN') {
             // check to see if an end date was passed ot the pin.stop
             if (pin.start() > pin.stop()) {
-                infoWindow.setContent('<div>' + marker.title + '</div><a href="' + pin.link() + '">link</a><div>' + pin.start() + ' - ' + pin.stop() + '</div>');
+                infoWindow.setContent(infoWindow.getContent() +
+                    '<a href="' + pin.link() + '">Event link</a><div>'
+                    + pin.start() + ' - ' + pin.stop() + '</div>');
             } else {
-                infoWindow.setContent('<div>' + marker.title + '</div><a href="' + pin.link() + '">link</a><div>' + pin.start() + '</div>');
+                infoWindow.setContent(infoWindow.getContent() +
+                '<a href="' + pin.link() + '">Event link</a><div>'
+                + pin.start() + '</div>');
             }
-        } else {
-            infoWindow.setContent('<div>' + marker.title + '</div><a href="' + pin.link() + '">link</a>');
-        }
+        };
+        console.log(marker.title);
+        console.log(url);
+        $.getJSON(url, function(data) {
+            var venue = data.response.venues[0];
+            console.log(data)
+            var venueLink = venue.url;
+            console.log(venueLink);
+            var checkIns = venue.stats.checkinsCount;
+            console.log(checkIns)
+            infoWindow.setContent(infoWindow.getContent() + '<div>')
+        })
         // closes infoWindow
         infoWindow.addListener('closeclick', function () {
             infoWindow.marker = null;
@@ -360,7 +385,7 @@ var ViewModel = function () {
         self.pins.removeAll();
         // set initial markers and add to pins array
         model.locations.forEach(function (loc) {
-            self.pins.push(new Pin(loc.title, loc.url, loc.lat, loc.lng, model.map));
+            self.pins.push(new Pin(loc.title, loc.url, loc.lat, loc.lng, model.map, loc.title));
         });
         self.isOpen(true);
     };
@@ -414,6 +439,7 @@ var ViewModel = function () {
                     events[i].latitude,
                     events[i].longitude,
                     map,
+                    events[i].venue_name,
                     events[i].start_time,
                     events[i].stop_time
                 ));
@@ -450,7 +476,7 @@ var ViewModel = function () {
 };
 // initialize map after loading googleapi
 function init() {
-    viewModel.init();
+    ViewModel.init();
 }
 // apply ko.bindings
 ko.applyBindings(ViewModel());
